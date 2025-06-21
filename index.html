@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MultimodalAuth</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="hero">
+        <div class="hero-content">
+            <h1><span class="light">Multimodal</span><span class="accent">Auth</span></h1>
+            <h2 class="subtitle">Multimodal authentication system using audio & video modality, enchanced by fusion module for deepfake detection.</h2>
+        </div>
+        <div class="hero-logo">
+            <img src="./assets/multimodal_auth.png" alt="Project Logo">
+        </div>
+    </header>
+    <main>
+        <section id="introduction">
+            <h2>Introduction</h2>
+            <p>Multimodal auth is a research and implementation project carried out by students of artificial intelligence at the Wrocław University of Science and Technology.
+            </p>
+            <p> 
+            It deals with multi-modal authentication. We focus on the modality of the voice and the face, additionally combining modalities with plug-in fusion to perform deepfake detection.
+            </p>
+        </section>
+        <section id="motivation">
+            <h2>Motivation</h2>
+            <p>The motivation behind our project is the need to address the vulnerability of popular biometric systems to:</p>
+            <ul>
+                <li>Presentation attacks</li>
+                <li>Sensitivity to changing environmental conditions</li>
+            </ul>
+            <p>This challenge applies not only to large companies, but also to each and every one of us - all of us who want to use modern, secure identity verification methods.</p>
+            <p>
+                Another challenge when integrating additional security features (e.q deepfake detection) into verification systems is: </p>
+                <ul>
+                    <li>High computational requirements</li>
+                    <li>Long training times</li>
+                </ul> Tamper detection has to operate separately from verification, which significantly increases the response time of the system.
+            </p>
+        </section>
+        <section id="goal">
+            <h2>Goal</h2>
+            <h3>Creating a biometric user authentication system using audio and video data.</h3>
+            <p>Including:</p>
+            <ul>
+                <li><h3>Flexible approach to variable recording quality</h3></li>
+                <li><h3>Detection of DeepFake attacks</h3></li>
+            </ul>
+        </section>
+        <section id="solution">
+            <h2>Proposed Solution</h2>
+
+
+            <h3 class="subsection">Voice Modality</h3>
+            <p>In order to select the best model for the voice embedding domain, we conducted an evaluation on four-second sequences and environmental noise data. Between the models, ECAPA-TDNN, CAM++, and REDIMNET, <b>REDIMNET</b> showed the lowest frequency of errors in both quality cases, so it was the one selected for our pipeline.</p>
+            <div class="image-container">
+                <img src="./assets/voice_results.png" alt="Voice Modality Diagram" class="image">
+            </div>
+
+            <h3 class="subsection">Face Modality</h3>
+            <p>The pretrained SOTA model AdaFace was selected for face verification. To improve verification, several methods were tested to assess the quality of the face image in terms of their impact on metrics. CR-FIQA, SDD-FIQA, SDD-FIQA-mod (modified SDD-FIQA) and SER-FIQ methods were tested. The best results were obtained for SDD-FIQA-mod.</p>
+            <div class="image-container">
+                <img src="./assets/face_results.png" alt="Face Modality Diagram" class="image">
+            </div>
+
+            <h3 class="subsection">Pipeline</h3>
+            <p>In our solution pipeline, we segment the film using a sliding window. The window size is set to 4 seconds, which is the length of the audio and video fragments used for verification. The sliding window allows us to process the entire recording, even if it is longer than 4 seconds.</p>
+
+            <p>We assess the audio and video quality, which increases the flexibility of the system. Depending on the selected quality threshold, we can make the system more accessible for verification under varying conditions or increase its security by rejecting low-quality recordings.</p>
+
+            <p>Feature extraction with domain models is performed on the fragments filtered for quality. The extracted features are passed to fusion, whose task is to determine the veracity of the recording. The verification models and the detection module return predictions on the basis of which a final rejection or acceptance decision is returned.</p>
+
+            <div class="image-container">
+                <img src="./assets/pipeline.png" alt="Architecture Diagram" class="image">
+            </div>
+
+            <h3 class="subsection">DeepFake Detection Module</h3>
+            <p>Using late fusion in the solution has many advantages. It allows for simple personalisation and change of domain models. The saving of computational resources and the time needed for the learning process is also an important advantage. In addition, fusion ensures the scalability of the system, making it easier to expand with new modalities.</p>
+            <p>Our system performs a projection of voice and facial features into a common space, aligning the data distributions and separating true examples from manipulated ones within each modality. The fusion module then uses cross-attention to assess pairwise correspondences. The final classifier decides whether the sample is real or not.</p>
+
+            <div class="image-container">
+                <img src="./assets/fusion_module.png" alt="Fusion Module Diagram" class="image">
+            </div>
+
+
+        </section>
+        <section id="results">
+            <h2>Results</h2>
+            <p>Our method achieves comparable results to competing SOTA models in the DeepFake detection task, while it is 40x smaller than SSVF and the inference time takes almost 300x less time.</p>
+            
+            <div class="image-container">
+                <img src="./assets/detection_results.png" alt="Fusion Module Diagram" class="image-big">
+            </div>
+        </section>
+        
+        <section id="example">
+            <h2>Example of final voting</h2>
+            <p>In our approach, we implement a hard voting mechanism to combine the predictions from multiple modalities. Each modality independently assesses the authenticity of the input, and their votes are aggregated to make a final decision.</p>
+            <p>
+            In this particular example, audio and video modalities accepted a verification request, while the deepfake detection module rejected it. Resulting in a final decision of rejection. This illustrates how the system can effectively handle conflicting predictions from different modalities.
+            </p>
+            <div class="image-container">
+                <img src="./assets/hard_voting.png" alt="Hard Voting Diagram" class="image-big">
+            </div>
+        </section>
+
+        <section id="library">
+            <h2>SynthWeave Library</h2>
+            <img src="./assets/synthweave_logo_text.png" alt="SynthWeave Logo" class="image">
+            <p>Explore our open-source library on <a href="https://github.com/Woleek/SynthWeave" target="_blank" class="github-link">GitHub</a> for implementation details and code.</p>
+        </section>
+
+        <section id="resources">
+            <h2>Resources</h2>
+            <ul>
+                <li><a href="./assets/poster.pdf" target="_blank" class="author-link">Project Poster (PDF)</a></li>
+                <li><a href="./assets/presentation.pdf" target="_blank" class="author-link">Project Presentation (PDF)</a></li>
+            </ul>
+        </section>
+        
+        <section id="contacts">
+            <h2>Contacts</h2>
+            <ul>
+                <h3>Students</h3>
+                <li>
+                    inż. Izabela Majchrowska
+                    <a href="https://www.linkedin.com/in/majchrowskaiza12/" class="author-link">LinkedIn</a>
+                </li>
+                <li>
+                    inż. Filip Strózik
+                    <a href="https://www.linkedin.com/in/filip-str%C3%B3zik-600466248/" class="author-link">LinkedIn</a>
+                </li>
+                <li>
+                    inż. Dawid Wolkiewicz
+                    <a href="https://www.linkedin.com/in/dawid-wolkiewicz/" class="author-link">LinkedIn</a>
+                </li>
+                <h3>Supervisor</h3>
+                <li>
+                    dr inż. Piotr Syga
+                        <a href="mailto:piotr.syga@pwr.edu.pl" class="author-link">piotr.syga@pwr.edu.pl</a>
+                </li>
+            </ul>
+        </section>
+    </main>
+    <footer>
+        <p>&copy; 2025 MultimodalAuth Team. Proudly created with ❤️. <a href="https://github.com/Woleek/SynthWeave" class="author-link">GitHub</a></p>
+    </footer>
+</body>
+</html>
