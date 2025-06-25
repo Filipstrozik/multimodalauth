@@ -115,13 +115,14 @@ footer {
 }
 
 .image {
-    width: -webkit-fill-available;
+    width: 100%;
+    max-width: 100%;
     max-height: 400px;
     object-fit: contain;
 }
 
 .image-big {
-    width: -webkit-fill-available;
+    width: 100%;
     max-height: 800px;
     object-fit: contain;
 }
